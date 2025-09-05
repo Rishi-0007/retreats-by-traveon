@@ -3,60 +3,214 @@
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Star, Quote } from "lucide-react";
-import { useMemo } from "react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
 
-// Convert shared Google Drive link -> preview URL
-function toDrivePreview(url: string) {
-  const m = url.match(/\/file\/d\/([^/]+)\//);
-  const id = m?.[1];
-  return id ? `https://drive.google.com/file/d/${id}/preview` : url;
-}
+/* ---------------- Types ---------------- */
 
-/** Format-aware video wrapper (no global.css dependency)
- *  - portrait => 9:16 (reel-style)
- *  - landscape => 16:9
- */
-function VideoFrame({
+type Media = {
+  type: "video" | "image";
+  src: string; // /testimonials/1.mp4 OR /assets/...jpg
+  poster?: string; // optional poster for video (or image fallback)
+  format?: "portrait" | "landscape"; // portrait = 9:16, landscape = 16:9
+  autoplayOnView?: boolean; // 👈 new: autoplay when card is visible
+  loop?: boolean; // optional: loop video (default true)
+};
+
+type Testimonial = {
+  content: string;
+  author: string;
+  role: string;
+  company?: string;
+  rating: number;
+  avatar: string;
+  media?: Media;
+  trip?: string;
+};
+
+/* ---------------- Light HTML5 Video ----------------
+   - Shows poster by default.
+   - If autoplayOnView=true, it autoplays muted once the card is ~50% visible.
+   - Pauses when scrolled away; resumes when visible again.
+---------------------------------------------------- */
+function LightVideo({
   src,
   title,
+  poster,
   format = "landscape",
+  autoplayOnView = false,
+  loop = true,
 }: {
   src: string;
   title: string;
+  poster?: string;
   format?: "portrait" | "landscape";
+  autoplayOnView?: boolean;
+  loop?: boolean;
 }) {
-  const base = useMemo(() => toDrivePreview(src), [src]);
-  const url = useMemo(
-    () =>
-      base.includes("?")
-        ? `${base}&autoplay=1&mute=1`
-        : `${base}?autoplay=1&mute=1`,
-    [base]
-  );
+  const [playing, setPlaying] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // padding-top percentage for aspect ratio
   const pad =
     format === "portrait"
       ? "pt-[177.78%]" /* 9:16 */
       : "pt-[56.25%]"; /* 16:9 */
 
+  // Observe visibility to start/stop video
+  useEffect(() => {
+    if (!autoplayOnView) return;
+    const el = wrapperRef.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+            setPlaying(true);
+          } else {
+            setPlaying(false);
+          }
+        }
+      },
+      { threshold: [0, 0.5, 1] }
+    );
+
+    io.observe(el);
+    return () => io.disconnect();
+  }, [autoplayOnView]);
+
+  // Keep the <video> element in control when visibility toggles
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+
+    if (playing) {
+      // ensure muted is set before play (iOS/Safari)
+      v.muted = true;
+      const p = v.play();
+      if (p && typeof p.catch === "function") {
+        p.catch(() => {
+          /* ignore autoplay errors */
+        });
+      }
+    } else {
+      try {
+        v.pause();
+      } catch {}
+    }
+  }, [playing]);
+
   return (
     <div
+      ref={wrapperRef}
       className={`relative w-full ${pad} rounded-xl overflow-hidden shadow-card bg-background`}
     >
-      <iframe
-        src={url}
-        allow="autoplay; encrypted-media; picture-in-picture"
-        allowFullScreen
-        title={title}
-        className="absolute inset-0 h-full w-full"
-      />
+      {/* Render poster layer if not playing and not in autoplay-on-view mode */}
+      {!playing && !autoplayOnView && (
+        <button
+          type="button"
+          aria-label="Play testimonial video"
+          onClick={() => setPlaying(true)}
+          className="group absolute inset-0 w-full h-full"
+        >
+          {poster ? (
+            <Image
+              src={poster}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-muted/10" />
+          )}
+          <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-smooth" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="h-14 w-14 rounded-full bg-white/95 text-primary grid place-items-center shadow-card group-hover:scale-105 transition-spring">
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path fill="currentColor" d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        </button>
+      )}
+
+      {/* Always mount the <video> when autoplayOnView is true so it can start instantly when visible.
+          For click-to-play case, mount only when playing to avoid initial buffering. */}
+      {(autoplayOnView || playing) && (
+        <video
+          ref={videoRef}
+          src={src}
+          className="absolute inset-0 h-full w-full object-cover"
+          muted
+          playsInline
+          autoPlay
+          controls
+          loop={loop}
+          preload={autoplayOnView ? "auto" : "metadata"}
+          aria-label={title}
+        />
+      )}
+
+      {/* If autoplayOnView and not yet playing (not visible enough), show the poster behind the future video mount */}
+      {autoplayOnView && !playing && poster && (
+        <Image
+          src={poster}
+          alt={title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+      )}
     </div>
   );
 }
 
-// ⭐ Bangkok testimonial now marked as portrait + formal/joyful English
-const testimonials = [
+/* ---------------- Media Frame ----------------
+   Renders either an image or a (light) local video with correct aspect.
+------------------------------------------------ */
+function MediaFrame({ media, title }: { media?: Media; title: string }) {
+  if (!media) return null;
+  const format = media.format ?? "landscape";
+  const pad = format === "portrait" ? "pt-[177.78%]" : "pt-[56.25%]";
+
+  if (media.type === "image") {
+    return (
+      <div
+        className={`relative w-full ${pad} rounded-xl overflow-hidden shadow-card bg-background`}
+      >
+        <Image
+          src={media.src}
+          alt={title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 50vw"
+        />
+      </div>
+    );
+  }
+
+  return (
+    <LightVideo
+      src={media.src}
+      poster={media.poster}
+      title={title}
+      format={format}
+      autoplayOnView={media.autoplayOnView}
+      loop={media.loop ?? true}
+    />
+  );
+}
+
+/* ---------------- Data ---------------- */
+
+const testimonials: Testimonial[] = [
   {
     content:
       "Our group of five friends travelled to Pattaya and Bangkok—proof that adventure has no age! Traveon handled every detail with care: smooth transfers, clean and central hotels, and thoughtfully paced days. It was joyful, comfortable, and truly memorable.",
@@ -65,11 +219,15 @@ const testimonials = [
     company: "(Lucknow)",
     rating: 5,
     avatar: "MS",
-    videoUrl: toDrivePreview(
-      "https://drive.google.com/file/d/1C56Mh4zo3DWsnAr-kcM0rvz0R0njI0a7/view?usp=sharing"
-    ),
     trip: "Pattaya & Bangkok, Thailand",
-    format: "portrait" as const, // << reel-style
+    media: {
+      type: "video",
+      src: "/testimonials/1.mp4", // put the file in /public/testimonials/1.mp4
+      poster: "/assets/testimonials/thailand-senior-group.jpg",
+      format: "portrait", // reel-style 9:16
+      autoplayOnView: true, // 👈 will autoplay (muted) when visible
+      loop: true,
+    },
   },
   {
     content:
@@ -79,6 +237,11 @@ const testimonials = [
     company: "Tech Startup",
     rating: 5,
     avatar: "PS",
+    media: {
+      type: "image",
+      src: "/testimonials/priya.jpg",
+      format: "landscape",
+    },
   },
   {
     content:
@@ -91,14 +254,35 @@ const testimonials = [
   },
   {
     content:
-      "The community tour through Kerala opened our eyes to authentic India. Every interaction felt genuine, and the local connections we made were priceless.",
-    author: "Emma Thompson",
+      "The community tour through Oman opened our eyes to authentic Arabia. Every interaction felt genuine, and the local connections we made were priceless.",
+    author: "Rahul Mehta",
     role: "Travel Blogger",
     company: "Wanderlust Weekly",
     rating: 5,
     avatar: "ET",
+    media: {
+      type: "image",
+      src: "/testimonials/oman.jpeg",
+      format: "landscape",
+    },
+  },
+  {
+    author: "Aisha Khan",
+    role: "Freelance Designer",
+    rating: 5,
+    avatar: "AK",
+    trip: "Almaty & Astana, Kazakhstan",
+    content:
+      "Exploring Kazakhstan with Traveon was an unforgettable experience. From the bustling markets of Almaty to the futuristic skyline of Astana, every moment was filled with wonder and discovery. The local guides were incredibly knowledgeable and made us feel at home.",
+    media: {
+      type: "image",
+      src: "/testimonials/almaty.jpeg",
+      format: "landscape",
+    },
   },
 ];
+
+/* ---------------- UI bits ---------------- */
 
 function Rating({ count = 5 }: { count?: number }) {
   return (
@@ -109,6 +293,8 @@ function Rating({ count = 5 }: { count?: number }) {
     </div>
   );
 }
+
+/* ---------------- Main ---------------- */
 
 export function Testimonials() {
   return (
@@ -129,63 +315,65 @@ export function Testimonials() {
           </p>
         </div>
 
-        {/* Masonry layout: no stretched rows, beautiful balancing */}
+        {/* Masonry columns: no stretched rows, neat balancing */}
         <div className="space-y-8 md:columns-2 lg:columns-3 md:gap-8">
-          {testimonials.map((t, index) => (
-            <Card
-              key={index}
-              className="relative p-8 shadow-card hover:shadow-floating transition-spring bg-gradient-to-br from-background to-primary/5 border-0 mb-8 break-inside-avoid"
-            >
-              {/* Hide decorative quote when video present to avoid any overlap */}
-              {!t.videoUrl && (
-                <div className="absolute top-6 right-6 opacity-20 pointer-events-none z-0">
-                  <Quote className="h-8 w-8 text-primary" />
-                </div>
-              )}
+          {testimonials.map((t, index) => {
+            const hasMedia = !!t.media;
+            return (
+              <Card
+                key={index}
+                className="relative p-8 shadow-card hover:shadow-floating transition-spring bg-gradient-to-br from-background to-primary/5 border-0 mb-8 break-inside-avoid"
+              >
+                {/* Hide quote if media exists to avoid overlay */}
+                {!hasMedia && (
+                  <div className="absolute top-6 right-6 opacity-20 pointer-events-none z-0">
+                    <Quote className="h-8 w-8 text-primary" />
+                  </div>
+                )}
 
-              <CardContent className="p-0 space-y-6 relative z-10">
-                {/* Video sits INSIDE the card, above the text, only when present */}
-                {t.videoUrl ? (
-                  <div>
-                    <VideoFrame
-                      src={t.videoUrl}
-                      title={`${t.author} — Testimonial Video`}
-                      format={(t as any).format || "landscape"}
-                    />
-                    {t.trip && (
-                      <div className="mt-2 text-xs uppercase tracking-wide text-muted">
-                        {t.trip}
+                <CardContent className="p-0 space-y-6 relative z-10">
+                  {/* Media */}
+                  {hasMedia && (
+                    <div>
+                      <MediaFrame
+                        media={t.media}
+                        title={`${t.author} — Testimonial`}
+                      />
+                      {t.trip && (
+                        <div className="mt-2 text-xs uppercase tracking-wide text-muted">
+                          {t.trip}
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Rating */}
+                  <Rating count={t.rating} />
+
+                  {/* Content */}
+                  <blockquote className="text-lg leading-relaxed font-light italic">
+                    “{t.content}”
+                  </blockquote>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center text-white font-semibold">
+                      {t.avatar}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-foreground">
+                        {t.author}
                       </div>
-                    )}
-                  </div>
-                ) : null}
-
-                {/* Rating */}
-                <Rating count={t.rating} />
-
-                {/* Content */}
-                <blockquote className="text-lg leading-relaxed font-light italic">
-                  “{t.content}”
-                </blockquote>
-
-                {/* Author */}
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full gradient-primary flex items-center justify-center text-white font-semibold">
-                    {t.avatar}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">
-                      {t.author}
-                    </div>
-                    <div className="text-sm text-muted">
-                      {t.role}
-                      {t.company ? `, ${t.company}` : ""}
+                      <div className="text-sm text-muted">
+                        {t.role}
+                        {t.company ? `, ${t.company}` : ""}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            );
+          })}
         </div>
 
         {/* Stats Bar */}

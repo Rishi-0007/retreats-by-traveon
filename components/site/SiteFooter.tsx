@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/enhanced-button";
 import { Input } from "@/components/ui/input";
+import Logo from "./Logo";
 
 const footerLinks = {
   company: [
@@ -58,7 +59,7 @@ export function SiteFooter() {
               href="/"
               className="flex items-center space-x-2 font-heading font-bold text-2xl text-gradient mb-4"
             >
-              Retreats
+              <Logo height={100} width={100} />
             </Link>
             <p className="text-muted mb-6 leading-relaxed">
               Creating transformative experiences through immersive wellness
