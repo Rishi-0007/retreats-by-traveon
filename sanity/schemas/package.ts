@@ -1,0 +1,26 @@
+export default {
+  name: "package",
+  title: "Package",
+  type: "document",
+  fields: [
+    { name: "title", type: "string", validation: (Rule: any) => Rule.required().max(80) },
+    { name: "slug", type: "slug", options: { source: "title", maxLength: 96 } },
+    { name: "retreatType", type: "reference", to: [{ type: "retreatType" }], validation: (Rule: any) => Rule.required() },
+    { name: "shortSummary", type: "text" },
+    { name: "location", type: "string" },
+    { name: "durationDays", type: "number" },
+    { name: "priceFrom", type: "number" },
+    { name: "heroImage", type: "image", options: { hotspot: true } },
+    { name: "gallery", type: "array", of: [{ type: "image" }] },
+    { name: "highlights", type: "array", of: [{ type: "string" }] },
+    { name: "amenities", type: "array", of: [{ type: "string" }] },
+    { name: "wellnessFocus", type: "array", of: [{ type: "string" }] },
+    { name: "corporateFocus", type: "array", of: [{ type: "string" }] },
+    { name: "inclusions", type: "array", of: [{ type: "string" }] },
+    { name: "exclusions", type: "array", of: [{ type: "string" }] },
+    { name: "itinerary", type: "array", of: [{ type: "itineraryDay" }] },
+    { name: "departures", type: "array", of: [{ type: "departure" }] },
+    { name: "faqs", type: "array", of: [{ type: "faqItem" }] },
+    { name: "seo", type: "seo" },
+  ]
+}

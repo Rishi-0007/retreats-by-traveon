@@ -1,0 +1,236 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================
+   Retreats by Traveon Design System (HSL variables)
+   Calm, rejuvenating, premium aesthetic: nature × luxury × pro
+   Tailwind config should map theme colors to CSS vars
+   (e.g., bg-background => hsl(var(--background))).
+   
+   ✨ Cleaned: merged duplicate :root/.dark blocks so your
+   brand tokens aren’t accidentally overridden later.
+========================================================= */
+
+:root {
+  /* Core color tokens */
+  --background: 0 0% 100%;
+  --foreground: 0 0% 3.9%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 0 0% 20%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 0 0% 20%;
+
+  /* Brand */
+  --primary: 182 45% 48%; /* Teal #44B3C4 */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 130 45% 58%; /* Green #6BC273 */
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 210 8% 57%; /* Cool gray #8A8F98 */
+  --muted-foreground: 0 0% 20%;
+
+  --accent: 40 85% 62%; /* Warm amber #F6B93B */
+  --accent-foreground: 0 0% 20%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 30 15% 90%;
+  --input: 30 15% 92%;
+  --ring: 182 45% 48%;
+
+  /* Sidebar */
+  --sidebar-background: 0 0% 98%;
+  --sidebar-foreground: 240 5.3% 26.1%;
+  --sidebar-primary: 240 5.9% 10%;
+  --sidebar-primary-foreground: 0 0% 98%;
+  --sidebar-accent: 240 4.8% 95.9%;
+  --sidebar-accent-foreground: 240 5.9% 10%;
+  --sidebar-border: 220 13% 91%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(
+    135deg,
+    hsl(182 45% 48%),
+    hsl(130 45% 58%)
+  );
+  --gradient-subtle: linear-gradient(180deg, hsl(30 20% 98%), hsl(30 20% 96%));
+  --gradient-hero: linear-gradient(
+    135deg,
+    hsl(182 45% 48% / 0.9),
+    hsl(130 45% 58% / 0.9)
+  );
+
+  /* Shadows */
+  --shadow-soft: 0 4px 20px hsl(182 45% 48% / 0.08);
+  --shadow-card: 0 8px 30px hsl(0 0% 0% / 0.08);
+  --shadow-floating: 0 20px 60px hsl(182 45% 48% / 0.12);
+
+  /* Motion */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-spring: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Radius */
+  --radius: 0.75rem;
+}
+
+.dark {
+  --background: 222.2 84% 4.9%;
+  --foreground: 210 40% 98%;
+
+  --card: 222.2 84% 4.9%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222.2 84% 4.9%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+
+  --secondary: 217.2 32.6% 17.5%;
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217.2 32.6% 17.5%;
+  --muted-foreground: 215 20.2% 65.1%;
+
+  --accent: 217.2 32.6% 17.5%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217.2 32.6% 17.5%;
+  --input: 217.2 32.6% 17.5%;
+  --ring: 212.7 26.8% 83.9%;
+
+  --sidebar-background: 240 5.9% 10%;
+  --sidebar-foreground: 240 4.8% 95.9%;
+  --sidebar-primary: 224.3 76.3% 48%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent-foreground: 240 4.8% 95.9%;
+  --sidebar-border: 240 3.7% 15.9%;
+  --sidebar-ring: 217.2 91.2% 59.8%;
+}
+
+/* ---------- BASE LAYER ---------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased font-body;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+  }
+}
+
+/* ---------- COMPONENTS LAYER ---------- */
+@layer components {
+  /* Gradients */
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  .gradient-subtle {
+    background: var(--gradient-subtle);
+  }
+
+  /* Shadows */
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  .shadow-floating {
+    box-shadow: var(--shadow-floating);
+  }
+
+  /* Motion helpers */
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  .transition-spring {
+    transition: var(--transition-spring);
+  }
+
+  /* Floating animation */
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Brand gradient utility kept for convenience */
+  .gradient-brand {
+    @apply bg-gradient-to-r from-[#44B3C4] to-[#6BC273];
+  }
+
+  .container-prose {
+    @apply max-w-3xl mx-auto;
+  }
+}
+
+/* ---------- UTILITIES LAYER ---------- */
+@layer utilities {
+  .page-center {
+    @apply max-w-5xl mx-auto px-6;
+  }
+
+  /* Optional: subtle focus ring override for carousel dots if desired */
+  .focus-ring {
+    outline: none;
+    box-shadow: 0 0 0 3px hsl(var(--ring) / 0.35);
+  }
+}
+
+/* Optional: legacy logo spin */
+@media (prefers-reduced-motion: no-preference) {
+  .spin-slow {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
