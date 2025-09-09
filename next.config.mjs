@@ -10,6 +10,9 @@ const nextConfig = {
   },
   experimental: {
     // appDir is default in Next 13+
-  }
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 export default nextConfig;

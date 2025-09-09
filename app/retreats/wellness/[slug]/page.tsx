@@ -2,15 +2,17 @@
 import { notFound } from "next/navigation";
 import { getPackageBySlug } from "@/lib/seed";
 import { PackageDetailPage } from "@/components/site/PackageDetailPage";
+import type { Metadata } from "next";
 
 interface PageProps {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps) {
-  const pkg = getPackageBySlug(params.slug);
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const pkg = getPackageBySlug(slug);
 
   if (!pkg) {
     return {
@@ -30,8 +32,9 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default function RetreatPage({ params }: PageProps) {
-  const pkg = getPackageBySlug(params.slug);
+export default async function RetreatPage({ params }: PageProps) {
+  const { slug } = await params;
+  const pkg = getPackageBySlug(slug);
 
   if (!pkg || pkg.category !== "Wellness") {
     notFound();
@@ -40,10 +43,7 @@ export default function RetreatPage({ params }: PageProps) {
   return <PackageDetailPage pkg={pkg} />;
 }
 
-// Generate static paths for better performance
 export async function generateStaticParams() {
-  // This would typically fetch from your CMS/database
-  // For now, we'll use the seed data
   const { seedPackages } = await import("@/lib/seed");
 
   return seedPackages

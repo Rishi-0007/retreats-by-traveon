@@ -68,8 +68,16 @@ export const seedPackages: Package[] = [
     duration: 5,
     basePrice: 39999,
     currency: "INR",
-    heroImage: "https://images.unsplash.com/photo-1526772662000-3f88f10405ff",
-    gallery: [],
+    heroImage: "/muscat/1.jpg",
+    gallery: [
+      "/muscat/2.jpg",
+      "/muscat/3.jpg",
+      "/muscat/4.jpg",
+      "/muscat/5.jpg",
+      "/muscat/6.jpg",
+      "/muscat/7.jpg",
+      "/muscat/8.jpg",
+    ],
     highlights: [
       "Muscat City Tour",
       "Nizwa Fort",
@@ -145,7 +153,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Traveon Ventures LLP",
-    partnerLogo: "https://placehold.co/600x400",
+    partnerLogo: "/placeholder.jpg",
     isFeatured: true,
   },
 
@@ -161,8 +169,8 @@ export const seedPackages: Package[] = [
     duration: 4,
     basePrice: 28999,
     currency: "INR",
-    heroImage: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee",
-    gallery: [],
+    heroImage: "/rishikesh/1.jpg",
+    gallery: ["/rishikesh/2.jpg", "/rishikesh/3.jpg", "/rishikesh/4.jpg"],
     highlights: [
       "Daily yoga & pranayama",
       "Shatkriyas detox practices",
@@ -227,7 +235,7 @@ export const seedPackages: Package[] = [
       {
         name: "Arunanand Saraswati",
         bio: "Spiritual practitioner, energy healer, Reiki Grand Master, Lama Fera practitioner, and author of 'Transform Lives with Energy Healing'.",
-        image: "https://placehold.co/600x400",
+        image: "/rishikesh/arunanand.jpg",
         expertise: [
           "Ashtanga Yoga",
           "Kundalini Yoga",
@@ -237,6 +245,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Yogved Hospitality & Resort",
+    partnerLogo: "/rishikesh/anantam.png",
   },
 
   // --- Seychelles Group Tour ---
@@ -252,7 +261,16 @@ export const seedPackages: Package[] = [
     basePrice: 130000,
     currency: "INR",
     heroImage: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
-    gallery: [],
+    gallery: [
+      "/seychelles/1.jpg",
+      "/seychelles/2.jpg",
+      "/seychelles/3.jpg",
+      "/seychelles/4.jpg",
+      "/seychelles/5.jpg",
+      "/seychelles/6.jpg",
+      "/seychelles/7.jpg",
+      "/seychelles/8.jpg",
+    ],
     highlights: [
       "Mahé Island guided tour",
       "Bel Ombre & Beau Vallon Beach",
@@ -318,7 +336,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Traveon Ventures LLP",
-    partnerLogo: "https://placehold.co/600x400",
+    partnerLogo: "/placeholder.jpg",
     isFeatured: true,
   },
 
@@ -334,8 +352,8 @@ export const seedPackages: Package[] = [
     duration: 4,
     basePrice: 26999,
     currency: "INR",
-    heroImage: "https://images.unsplash.com/photo-1506126613408-eca07ce68773",
-    gallery: [],
+    heroImage: "/anant/1.jpg",
+    gallery: ["/anant/2.jpg", "/anant/3.jpg", "/anant/4.jpg", "/anant/5.jpg"],
     highlights: [
       "Yoga & Pranayama in nature",
       "Mystic Rose meditation",
@@ -407,7 +425,7 @@ export const seedPackages: Package[] = [
       {
         name: "Anant Gogia",
         bio: "Certified Theta Meditation Instructor, Past Life Regression Therapist, Sound Healer, Tarot & Astrology teacher.",
-        image: "https://placehold.co/600x400",
+        image: "/anant/anant.jpg",
         expertise: [
           "Theta Meditation",
           "Past Life Regression",
@@ -417,7 +435,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Peaceful Poses Yoga Retreat Centre",
-    partnerLogo: "https://placehold.co/600x400",
+    partnerLogo: "/anant/partnerlogo.png",
     isFeatured: true,
   },
 ];

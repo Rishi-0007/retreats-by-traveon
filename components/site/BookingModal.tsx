@@ -285,7 +285,7 @@ export function BookingModal({ pkg, children }: BookingModalProps) {
                   </div>
                   <div className="flex justify-between">
                     <span>Travelers</span>
-                    <span>× {travelers}</span>
+                    <span>x {travelers}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between text-lg font-bold">

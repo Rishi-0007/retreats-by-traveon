@@ -30,7 +30,7 @@ interface CrossfadeCarouselProps {
  * - Auto-plays with pause on hover/focus
  * - Respects prefers-reduced-motion
  * - Dots for navigation
- * - Extensible: you can layer children overlays inside
+ * - Extensible: parent sets aspect ratio, carousel fills
  */
 export function CrossfadeCarousel({
   media,
@@ -55,7 +55,7 @@ export function CrossfadeCarousel({
 
   return (
     <div
-      className={`relative overflow-hidden ${className}`}
+      className={`relative w-full h-full overflow-hidden ${className}`}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onFocus={() => setHovered(true)}
@@ -80,13 +80,13 @@ export function CrossfadeCarousel({
               alt={alt}
               fill
               priority={priority}
-              className="object-cover will-change-transform"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover object-center will-change-transform"
+              sizes="100vw"
             />
           ) : (
             <video
               src={safeMedia[active].src}
-              className="w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover"
               autoPlay={
                 safeMedia[active].type === "video"
                   ? ((

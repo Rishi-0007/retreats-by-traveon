@@ -81,13 +81,8 @@ export function PackageDetailPage({ pkg }: PackageDetailPageProps) {
       </div>
 
       {/* Hero Section with Carousel */}
-      <div className="relative h-[60vh] lg:h-[70vh]">
-        <CrossfadeCarousel
-          media={carouselMedia}
-          alt={pkg.title}
-          className="h-full w-full"
-          priority
-        />
+      <div className="relative aspect-[4/3] md:aspect-[1440/545]">
+        <CrossfadeCarousel media={carouselMedia} alt={pkg.title} priority />
 
         {/* Overlay Content */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
