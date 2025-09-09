@@ -25,7 +25,8 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    const from = process.env.SMTP_FROM || "Retreats by Traveon <noreply@example.com>";
+    const from =
+      process.env.SMTP_FROM || "Retreats by Traveon <noreply@example.com>";
     const adminHtml = `
       <h3>New enquiry</h3>
       <p><b>Name:</b> ${data.name}</p>
@@ -47,12 +48,19 @@ export async function POST(req: NextRequest) {
       from,
       to: data.email,
       subject: "Thanks for reaching out",
-      html: `<p>Hi ${data.name},</p><p>Thanks for contacting Retreats by Traveon. Our team will get back to you shortly.</p>`
+      html: `<p>Hi ${data.name},</p><p>Thanks for contacting Retreats by Traveon. Our team will get back to you shortly.</p>`,
     });
 
     return NextResponse.json({ ok: true });
-  } catch (err: any) {
+  } catch (err) {
     console.error(err);
-    return NextResponse.json({ ok: false, error: err.message }, { status: 400 });
+    const errorMessage =
+      typeof err === "object" && err !== null && "message" in err
+        ? (err as { message?: string }).message
+        : "Unknown error";
+    return NextResponse.json(
+      { ok: false, error: errorMessage },
+      { status: 400 }
+    );
   }
 }

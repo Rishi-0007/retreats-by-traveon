@@ -145,7 +145,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Traveon Ventures LLP",
-    partnerLogo: "https://example.com/traveon-logo.png",
+    partnerLogo: "https://placehold.co/600x400",
     isFeatured: true,
   },
 
@@ -227,7 +227,7 @@ export const seedPackages: Package[] = [
       {
         name: "Arunanand Saraswati",
         bio: "Spiritual practitioner, energy healer, Reiki Grand Master, Lama Fera practitioner, and author of 'Transform Lives with Energy Healing'.",
-        image: "https://example.com/arunanand.jpg",
+        image: "https://placehold.co/600x400",
         expertise: [
           "Ashtanga Yoga",
           "Kundalini Yoga",
@@ -318,7 +318,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Traveon Ventures LLP",
-    partnerLogo: "https://example.com/traveon-logo.png",
+    partnerLogo: "https://placehold.co/600x400",
     isFeatured: true,
   },
 
@@ -407,7 +407,7 @@ export const seedPackages: Package[] = [
       {
         name: "Anant Gogia",
         bio: "Certified Theta Meditation Instructor, Past Life Regression Therapist, Sound Healer, Tarot & Astrology teacher.",
-        image: "https://example.com/anant.jpg",
+        image: "https://placehold.co/600x400",
         expertise: [
           "Theta Meditation",
           "Past Life Regression",
@@ -417,7 +417,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Peaceful Poses Yoga Retreat Centre",
-    partnerLogo: "https://example.com/peaceful-poses-logo.png",
+    partnerLogo: "https://placehold.co/600x400",
     isFeatured: true,
   },
 ];
