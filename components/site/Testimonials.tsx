@@ -223,7 +223,7 @@ const testimonials: Testimonial[] = [
     media: {
       type: "video",
       src: "/testimonials/1.mp4", // put the file in /public/testimonials/1.mp4
-      poster: "/assets/testimonials/thailand-senior-group.jpg",
+      // poster: "/assets/testimonials/thailand-senior-group.jpg",
       format: "portrait", // reel-style 9:16
       autoplayOnView: true, // 👈 will autoplay (muted) when visible
       loop: true,

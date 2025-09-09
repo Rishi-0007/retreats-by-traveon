@@ -1,10 +1,7 @@
 // components/site/PillarsGrid.tsx
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Card,
   CardContent,
@@ -14,17 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/enhanced-button";
 import { Heart, Users, Compass, Briefcase, ArrowRight } from "lucide-react";
-
-/**
- * 🔥 What changed
- * - Each card now has an auto-playing, cross-fading image carousel (2–3 images recommended).
- * - Hover to pause; keyboard focus also pauses for accessibility.
- * - Respects reduced motion preferences.
- * - Graceful fallback to a single image if extra images are not provided.
- *
- * ✅ How to add more images per pillar
- *   Add an `images: string[]` field with 2–3 related URLs. If omitted, `image` will be used alone.
- */
+import { CrossfadeCarousel } from "@/components/shared/CrossfadeCarousel";
 
 const pillars = [
   {
@@ -109,109 +96,37 @@ const pillars = [
   },
 ] as const;
 
-// --- Carousel Hook
-function useAutoCarousel(
-  length: number,
-  { interval = 3500, paused }: { interval?: number; paused?: boolean }
-) {
-  const [index, setIndex] = useState(0);
-  const timerRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (paused || length <= 1) return; // nothing to play
-    timerRef.current && window.clearInterval(timerRef.current);
-    timerRef.current = window.setInterval(() => {
-      setIndex((i) => (i + 1) % length);
-    }, interval);
-    return () => {
-      if (timerRef.current) window.clearInterval(timerRef.current);
-    };
-  }, [length, interval, paused]);
-
-  return [index, setIndex] as const;
-}
-
-// --- Pillar Card Component with Crossfade
 function PillarCard({ pillar }: { pillar: (typeof pillars)[number] }) {
-  const prefersReducedMotion = useReducedMotion();
-  const [hovered, setHovered] = useState(false);
-  const images = useMemo(
-    () =>
-      pillar.images && pillar.images.length > 0
-        ? pillar.images
-        : [pillar.image],
-    [pillar.images, pillar.image]
-  );
-  const [active, setActive] = useAutoCarousel(images.length, {
-    interval: 2400,
-    paused: !!(hovered || prefersReducedMotion),
-  });
+  const media = pillar.images?.length
+    ? pillar.images.map((src) => ({ type: "image" as const, src }))
+    : [{ type: "image" as const, src: pillar.image }];
 
   return (
     <Card
       key={pillar.title}
       className={`group hover:shadow-floating transition-spring overflow-hidden bg-gradient-to-br ${pillar.gradient} border-0`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onFocus={() => setHovered(true)}
-      onBlur={() => setHovered(false)}
     >
+      {/* Carousel */}
       <div className="relative">
-        {/* Image Stage */}
-        <div className="aspect-[4/3] relative overflow-hidden">
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.div
-              key={active}
-              className="absolute inset-0"
-              initial={{ opacity: 0.0, scale: 1.02 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.01 }}
-              transition={{
-                duration: prefersReducedMotion ? 0 : 0.8,
-                ease: "easeOut",
-              }}
-            >
-              <Image
-                src={images[active]}
-                alt={pillar.title}
-                fill
-                priority={true}
-                className="object-cover will-change-transform"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-            </motion.div>
-          </AnimatePresence>
+        <CrossfadeCarousel
+          media={media}
+          alt={pillar.title}
+          interval={2400}
+          className="aspect-[4/3]"
+          priority
+        />
 
-          {/* Subtle gradient overlay to keep text legible */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+        {/* Subtle gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
 
-          {/* Icon Badge */}
-          <div className="absolute top-4 left-4">
-            <div className="p-3 rounded-xl bg-white/90 backdrop-blur-sm shadow-soft">
-              {(() => {
-                const Icon = pillar.icon;
-                return <Icon className={`h-6 w-6 ${pillar.color}`} />;
-              })()}
-            </div>
+        {/* Icon Badge */}
+        <div className="absolute top-4 left-4">
+          <div className="p-3 rounded-xl bg-white/90 backdrop-blur-sm shadow-soft">
+            {(() => {
+              const Icon = pillar.icon;
+              return <Icon className={`h-6 w-6 ${pillar.color}`} />;
+            })()}
           </div>
-
-          {/* Dots */}
-          {images.length > 1 && (
-            <div className="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-2">
-              {images.map((_, i) => (
-                <button
-                  key={i}
-                  aria-label={`Go to slide ${i + 1}`}
-                  onClick={() => setActive(i)}
-                  className={`h-1.5 rounded-full transition-all duration-300 ${
-                    i === active
-                      ? "w-5 bg-white"
-                      : "w-2 bg-white/60 hover:bg-white/80"
-                  }`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
@@ -283,7 +198,3 @@ export function PillarsGrid() {
     </>
   );
 }
-
-// Optional: if you use Tailwind, consider adding these utilities in your CSS for smoother animations
-// .transition-spring { transition: all 300ms cubic-bezier(0.22, 1, 0.36, 1); }
-// .hover:shadow-floating { box-shadow: 0 15px 40px -10px rgba(0,0,0,0.25); }
