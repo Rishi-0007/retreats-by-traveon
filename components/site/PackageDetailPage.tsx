@@ -86,9 +86,9 @@ export function PackageDetailPage({ pkg }: PackageDetailPageProps) {
 
         {/* Overlay Content */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 lg:p-12 text-white">
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-12 text-white">
           <div className="container">
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap">
               <Badge className={getCategoryColor(pkg.category)}>
                 {pkg.category}
               </Badge>
@@ -105,18 +105,20 @@ export function PackageDetailPage({ pkg }: PackageDetailPageProps) {
               )}
             </div>
 
-            <h1 className="text-4xl lg:text-6xl font-bold mb-4">{pkg.title}</h1>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-bold mb-3 sm:mb-4">
+              {pkg.title}
+            </h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-lg">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-sm sm:text-lg">
               <div className="flex items-center gap-2">
-                <MapPin className="h-5 w-5" />
+                <MapPin className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>{pkg.location}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Calendar className="h-5 w-5" />
+                <Calendar className="h-4 w-4 sm:h-5 sm:w-5" />
                 <span>{pkg.duration} Days</span>
               </div>
-              <div className="text-2xl font-bold">
+              <div className="text-lg sm:text-2xl font-bold">
                 From {formatPrice(pkg.basePrice, pkg.currency)}
               </div>
             </div>

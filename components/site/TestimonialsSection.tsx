@@ -24,8 +24,7 @@ const sampleTestimonials: Testimonial[] = [
     id: "1",
     name: "Priya Sharma",
     location: "Mumbai, India",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b0e3?w=150&h=150&fit=crop&crop=face",
+    avatar: "/testimonials/priya.jpg",
     rating: 5,
     review:
       "The Nirvana wellness retreat was absolutely transformative. Arunanand's guidance through meditation and sound healing helped me find inner peace I didn't know I was looking for. The ashram setting by the Ganges was perfect.",

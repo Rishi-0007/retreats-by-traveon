@@ -187,7 +187,7 @@ export function PillarsGrid() {
 
         {/* Bottom CTA */}
         <div className="md:col-span-2 text-center mt-16">
-          <Button variant="hero" size="xl" asChild>
+          <Button variant="hero" size="lg" asChild>
             <Link href="/contact">
               Start Planning Your Experience
               <ArrowRight className="ml-2 h-5 w-5" />

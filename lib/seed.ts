@@ -153,7 +153,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Traveon Ventures LLP",
-    partnerLogo: "/placeholder.jpg",
+    partnerLogo: "/muscat/traveon.png",
     isFeatured: true,
   },
 
@@ -336,7 +336,7 @@ export const seedPackages: Package[] = [
       },
     ],
     partner: "Traveon Ventures LLP",
-    partnerLogo: "/placeholder.jpg",
+    partnerLogo: "/seychelles/traveon.png",
     isFeatured: true,
   },
 
