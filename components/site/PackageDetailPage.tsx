@@ -250,7 +250,7 @@ export function PackageDetailPage({ pkg }: PackageDetailPageProps) {
             {/* Leaders */}
             {pkg.leaders && pkg.leaders.length > 0 && (
               <div>
-                <h2 className="text-3xl font-bold mb-6">Meet Your Leaders</h2>
+                <h2 className="text-3xl font-bold mb-6">Meet Your Trainers</h2>
                 <div className="space-y-6">
                   {pkg.leaders.map((leader, index) => (
                     <Card key={index}>
@@ -425,7 +425,7 @@ export function PackageDetailPage({ pkg }: PackageDetailPageProps) {
               {pkg.partner && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="text-sm">Organized by</CardTitle>
+                    <CardTitle className="text-sm">Conducted by</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center gap-3">
